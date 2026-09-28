@@ -1,0 +1,8 @@
+// export const RouteHome = "/dashboard/"
+export const RouteLogin = "/login"
+export const RouteRegister = "/register"
+export const RouteDashboard = "/dashboard"
+export const RouteProducts = "/dashboard/products"
+export const RouteSuppliers = "/dashboard/suppliers"
+export const RouteCategories = "/dashboard/categories"
+export const RouteStockmovements = "/dashboard/stockmovements"
