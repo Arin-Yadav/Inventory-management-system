@@ -34,8 +34,11 @@ async function handleCreateUser(req, res) {
 async function handleUserLogin(req, res) {
   try {
     const { email, password } = req.body;
+    // console.log(email)
+    // console.log(password)
 
     const user = await User.findOne({ email });
+    // console.log(user)
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
