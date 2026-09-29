@@ -1,21 +1,28 @@
-import { useState } from "react";
-import api from "../api/api";
+import { useContext, useState } from "react";
+// import api from "../api/api";
 import { useNavigate } from "react-router-dom";
+import { RouteIndex } from "../helpers/RouteName";
+import axios from "axios";
+import { InventoryContext } from "../context/Context";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const {backendURL, setToken} = useContext(InventoryContext)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/user/login", { email, password });
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+      // const res = await api.post("/user/login", { email, password });
+      const res = await axios.post(backendURL + "/user/login", {email, password})
+      localStorage.setItem("token", res.data?.token);
+      setToken(res.data?.token)
+      navigate(RouteIndex);
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      console.log("Error: ", err)
     }
   };
 
@@ -26,7 +33,7 @@ export default function Login() {
         className="bg-white p-6 rounded shadow-md w-80">
         <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
 
-        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+        {/* {error && <p className="text-red-500 text-sm mb-2">{error}</p>} */}
 
         <input
           type="email"

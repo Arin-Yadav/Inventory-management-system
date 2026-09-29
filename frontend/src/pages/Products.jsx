@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import api from "../api/api";
+import { InventoryContext } from "../context/Context";
 
 export default function Products() {
-  const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [suppliers, setSuppliers] = useState([]);
+
+  const { products, setProducts, suppliers } = useContext(InventoryContext);
+
   const [formData, setFormData] = useState({
     sku: "",
     name: "",
@@ -17,24 +19,6 @@ export default function Products() {
     category: "",
     supplier: "",
   });
-
-  // Fetch products
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const res = await api.get("/products");
-      setProducts(res.data);
-    };
-    fetchProducts();
-  }, []);
-
-  // Fetch suppliers when modal opens
-  useEffect(() => {
-    const fetchSuppliers = async () => {
-      const res = await api.get("/suppliers");
-      setSuppliers(res.data);
-    };
-    fetchSuppliers();
-  }, []);
 
   // Handle form input
   const handleChange = (e) => {
@@ -51,43 +35,49 @@ export default function Products() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Products</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-          + Add Product
+          className="bg-blue-500 text-white px-4 py-2 cursor-pointer rounded hover:bg-blue-600">
+          Add Product
         </button>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-white shadow rounded">
-        <table className="min-w-full text-sm text-left">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-2">SKU</th>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Quantity</th>
-              <th className="px-4 py-2">Cost</th>
-              <th className="px-4 py-2">Price</th>
-              <th className="px-4 py-2">Supplier</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((p) => (
-              <tr key={p._id} className="border-t hover:bg-gray-50">
-                <td className="px-4 py-2">{p.sku}</td>
-                <td className="px-4 py-2">{p.name}</td>
-                <td className="px-4 py-2">{p.quantity}</td>
-                <td className="px-4 py-2">₹{p.costPrice}</td>
-                <td className="px-4 py-2">₹{p.sellingPrice}</td>
-                <td className="px-4 py-2">{p.supplier?.name || "—"}</td>
+      <div className="min-w-0 md:max-w-full overflow-x-auto shadow rounded">
+        {products.length > 0 ? (
+          <table className="min-w-full text-sm text-left">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-4 py-2">SKU</th>
+                <th className="px-4 py-2">Name</th>
+                <th className="px-4 py-2">Quantity</th>
+                <th className="px-4 py-2">Cost</th>
+                <th className="px-4 py-2">Price</th>
+                <th className="px-4 py-2">Supplier</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {products.map((p) => (
+                <tr key={p._id} className="border-t hover:bg-gray-50">
+                  <td className="px-4 py-2">{p.sku}</td>
+                  <td className="px-4 py-2">{p.name}</td>
+                  <td className="px-4 py-2">{p.quantity}</td>
+                  <td className="px-4 py-2">₹{p.costPrice}</td>
+                  <td className="px-4 py-2">₹{p.sellingPrice}</td>
+                  <td className="px-4 py-2">{p.supplier?.name || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div>
+            <p className="p-6">No Products available</p>
+          </div>
+        )}
       </div>
 
       {/* Modal */}

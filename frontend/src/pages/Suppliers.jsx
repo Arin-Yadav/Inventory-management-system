@@ -1,24 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../api/api";
+import { useContext } from "react";
+import { InventoryContext } from "../context/Context";
 
 export default function Suppliers() {
-  const [suppliers, setSuppliers] = useState([]);
   const [showModal, setShowModal] = useState(false);
+
+  const {suppliers, setSuppliers} = useContext(InventoryContext)
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     address: "",
   });
-
-  // Fetch suppliers
-  useEffect(() => {
-    const fetchSuppliers = async () => {
-      const res = await api.get("/suppliers");
-      setSuppliers(res.data);
-    };
-    fetchSuppliers();
-  }, []);
 
   // Handle form input
   const handleChange = (e) => {
@@ -41,8 +36,8 @@ export default function Suppliers() {
         <h2 className="text-2xl font-bold">Suppliers</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-          + Add Supplier
+          className="bg-green-500 text-white px-4 py-2 cursor-pointer rounded hover:bg-green-600">
+          Add Supplier
         </button>
       </div>
 

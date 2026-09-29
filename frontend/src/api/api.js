@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL, // base URL
@@ -14,22 +13,22 @@ api.interceptors.request.use(
     }
     return config;
   },
+  (error) => Promise.reject(error),
+);
+
+// Response Interceptor = Runs after every response
+api.interceptors.response.use(
+  (response) => {
+    response;
+  },
   (error) => {
+    if (error.response?.status === 401) {
+      // Token expired or unauthorized - clear token and redirect
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
     return Promise.reject(error);
   },
 );
 
-// Response Interceptor = Runs after every resoponse
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or unauthorized - redirect to login
-      const navigate = useNavigate();
-      navigate("/login");
-    }
-  },
-);
-
-
-export default api
+export default api;

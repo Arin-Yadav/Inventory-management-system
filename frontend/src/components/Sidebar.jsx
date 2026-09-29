@@ -1,16 +1,21 @@
 import { Link } from "react-router-dom";
 import {
   RouteCategories,
+  RouteIndex,
   RouteProducts,
   RouteStockmovements,
   RouteSuppliers,
 } from "../helpers/RouteName";
 
-export default function Sidebar() {
+export default function Sidebar({ isSidebaropen}) {
   return (
-    <aside className="w-64 bg-white shadow-md">
-      <div className="p-6 text-xl font-bold border-b">IMS Dashboard</div>
-      <nav className="p-4 space-y-2">
+    <aside
+      className={`w-64 h-[calc(100vh-4rem)] fixed md:sticky left-0 top-16 pt-5 bg-white border-t border-gray-200 overflow-y-auto shadow-md transform transition-transform duration-300 ${isSidebaropen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
+      {/* <div className="text-xl font-bold border-b h-16 flex items-center">IMS</div> */}
+      <nav className="space-y-2 px-4">
+        <Link to={RouteIndex} className="block p-2 rounded hover:bg-blue-100">
+          Dashboard
+        </Link>
         <Link
           to={RouteProducts}
           className="block p-2 rounded hover:bg-blue-100">

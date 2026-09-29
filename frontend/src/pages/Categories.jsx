@@ -1,22 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../api/api";
+import { useContext } from "react";
+import { InventoryContext } from "../context/Context";
 
 export default function Categories() {
-  const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
+
+  const { categories, setCategories } = useContext(InventoryContext);
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
   });
-
-  // Fetch categories
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const res = await api.get("/categories");
-      setCategories(res.data);
-    };
-    fetchCategories();
-  }, []);
 
   // Handle form input
   const handleChange = (e) => {
@@ -39,8 +34,8 @@ export default function Categories() {
         <h2 className="text-2xl font-bold">Categories</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
-          + Add Category
+          className="bg-purple-500 text-white px-4 py-2 cursor-pointer rounded hover:bg-purple-600">
+          Add Category
         </button>
       </div>
 

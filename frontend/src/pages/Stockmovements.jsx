@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../api/api";
+import { useContext } from "react";
+import { InventoryContext } from "../context/Context";
 
 export default function StockMovements() {
-  const [movements, setMovements] = useState([]);
-  const [products, setProducts] = useState([]);
+  const { stockmovements, setStockmovements, products } = useContext(InventoryContext);
+
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     product: "",
@@ -11,19 +13,6 @@ export default function StockMovements() {
     quantity: 0,
     reason: "",
   });
-
-  // Fetch movements + products
-  useEffect(() => {
-    const fetchData = async () => {
-      const [movementsRes, productsRes] = await Promise.all([
-        api.get("/stockmovements"),
-        api.get("/products"),
-      ]);
-      setMovements(movementsRes.data);
-      setProducts(productsRes.data);
-    };
-    fetchData();
-  }, []);
 
   // Handle form input
   const handleChange = (e) => {
@@ -36,7 +25,7 @@ export default function StockMovements() {
     await api.post("/stockmovements", formData);
     setShowModal(false);
     const res = await api.get("/stockmovements");
-    setMovements(res.data);
+    setStockmovements(res.data);
   };
 
   return (
@@ -46,8 +35,8 @@ export default function StockMovements() {
         <h2 className="text-2xl font-bold">Stock Movements</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">
-          + Record Movement
+          className="bg-indigo-500 text-white px-4 py-2 cursor-pointer rounded hover:bg-indigo-600">
+          Record Movement
         </button>
       </div>
 
@@ -65,7 +54,7 @@ export default function StockMovements() {
             </tr>
           </thead>
           <tbody>
-            {movements.map((m) => (
+            {stockmovements.map((m) => (
               <tr key={m._id} className="border-t hover:bg-gray-50">
                 <td className="px-4 py-2">{m.product?.name || "—"}</td>
                 <td className="px-4 py-2">

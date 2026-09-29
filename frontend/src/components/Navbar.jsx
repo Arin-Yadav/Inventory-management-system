@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { RouteLogin } from "../helpers/RouteName";
+import { Menu, X } from "lucide-react";
 
-export default function Navbar() {
+export default function Navbar({ isSidebaropen, setIsSidebaropen }) {
   const navigate = useNavigate();
   const user = { name: "Arin", role: "Admin" }; // later from AuthContext
 
@@ -11,8 +12,14 @@ export default function Navbar() {
   };
 
   return (
-    <header className="flex items-center justify-between bg-white shadow px-6 py-3">
-      <h1 className="text-lg font-semibold">Inventory Management System</h1>
+    <div className="flex items-center justify-between fixed top-0 z-50 w-full bg-white shadow px-6 h-16">
+      <button
+        className="md:hidden text-gray-700 focus:outline-none"
+        onClick={() => setIsSidebaropen((prev) => !prev)}>
+        {isSidebaropen ? <X /> : <Menu />}
+      </button>
+
+      <h1 className="text-lg font-semibold">IMS</h1>
       <div className="flex items-center space-x-4">
         <span className="text-gray-700">
           {user.name} ({user.role})
@@ -23,6 +30,6 @@ export default function Navbar() {
           Logout
         </button>
       </div>
-    </header>
+    </div>
   );
 }
