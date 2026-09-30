@@ -24,7 +24,9 @@ async function handleCreateUser(req, res) {
     });
 
     await user.save();
-    res.status(201).json({ message: "User registered successfully" });
+    res
+      .status(201)
+      .json({ message: "User registered successfully", success: true });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: err.message });
@@ -38,7 +40,6 @@ async function handleUserLogin(req, res) {
     // console.log(password)
 
     const user = await User.findOne({ email });
-    // console.log(user)
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -54,8 +55,17 @@ async function handleUserLogin(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
     );
+
+    const userData = {
+      name: user.name,
+      email: user.email,
+      role: user.role
+    }
+
     res.status(200).json({
       token,
+      user: userData,
+      success: true,
     });
   } catch (error) {
     console.log(error);
@@ -63,4 +73,26 @@ async function handleUserLogin(req, res) {
   }
 }
 
-export { handleCreateUser, handleUserLogin };
+async function handleUserDetails(req, res) {
+  try {
+    const userData = req.user
+    const userId = userData.id
+
+    const user = await User.findById(userId).select("-password")
+    if(!user) {
+      return res.status(401).json({
+        success: false,
+        message: "You are unauthorized"
+      })
+    }
+    
+    res.status(200).json({
+      success: true,
+      user
+    })
+  } catch (error) {
+    console.log("Error: ", error)
+  }
+}
+
+export { handleCreateUser, handleUserLogin, handleUserDetails };

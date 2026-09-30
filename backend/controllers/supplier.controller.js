@@ -4,7 +4,7 @@ import Supplier from "../models/supplier.model.js";
 export const createSupplier = async (req, res) => {
   try {
     // const supplier = new Supplier(req.body);
-    const { name, email, phone, address, productsSupplied } = req.body;
+    const { name, email, phone, address, productsSupplied } = req.body.formData;
 
     const supplier = new Supplier({
       name,
@@ -15,7 +15,10 @@ export const createSupplier = async (req, res) => {
     });
 
     await supplier.save();
-    res.status(201).json(supplier);
+    res.status(201).json({
+      success: true,
+      supplier,
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

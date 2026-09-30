@@ -3,7 +3,8 @@ import Category from "../models/category.model.js";
 // Create category
 export const createCategory = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description } = req.body.formData;
+    console.log(name);
 
     if (!name) {
       return res.status(400).json({ message: "Category name is required" });
@@ -19,7 +20,11 @@ export const createCategory = async (req, res) => {
 
     res
       .status(201)
-      .json({ message: "Category created successfully", category });
+      .json({
+        message: "Category created successfully",
+        category,
+        success: true,
+      });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

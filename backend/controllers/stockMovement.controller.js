@@ -3,8 +3,9 @@ import Product from "../models/product.model.js";
 
 // Create new stock movements
 export const createStockMovement = async (req, res) => {
-  const { product, type, quantity, reason } = req.body;
+  const { product, type, quantity, reason } = req.body.formData;
   const userId = req.user.id;
+  const newQuantity = Number(quantity)
 
   // Validate Product
   const productDoc = await Product.findById(product);
@@ -14,12 +15,12 @@ export const createStockMovement = async (req, res) => {
 
   // Adjust Product Stock
   if (type === "IN") {
-    productDoc.quantity += quantity;
+    productDoc.quantity += newQuantity;
   } else if (type === "OUT") {
-    if (productDoc.quantity < quantity) {
+    if (productDoc.quantity < newQuantity) {
       return res.status(400).json({ message: "Not enough stock" });
     }
-    productDoc.quantity -= quantity;
+    productDoc.quantity -= newQuantity;
   } else if (type === "ADJUSTMENT") {
     productDoc.quantity = quantity;
   }
@@ -39,6 +40,7 @@ export const createStockMovement = async (req, res) => {
     message: "Stock movement recorder",
     movements,
     product: productDoc,
+    success: true
   });
 };
 

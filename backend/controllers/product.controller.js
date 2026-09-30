@@ -16,7 +16,7 @@ export const createProduct = async (req, res) => {
       supplier,
       reorderLevel,
       unitOfMeasure,
-    } = req.body;
+    } = req.body.formData;
 
     // Basic validations
     if (!sku || !name || !category || !costPrice || !sellingPrice) {
@@ -67,7 +67,7 @@ export const createProduct = async (req, res) => {
       });
     }
 
-    res.status(201).json({ message: "Product created successfully", product });
+    res.status(201).json({ message: "Product created successfully", product, success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
