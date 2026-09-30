@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { RouteLogin } from "../helpers/RouteName";
 import { Menu, X } from "lucide-react";
+import { useContext } from "react";
+import { InventoryContext } from "../context/Context";
 
 export default function Navbar({ isSidebaropen, setIsSidebaropen }) {
   const navigate = useNavigate();
-  const user = { name: "Arin", role: "Admin" }; // later from AuthContext
+  const { user, token } = useContext(InventoryContext);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -24,11 +26,19 @@ export default function Navbar({ isSidebaropen, setIsSidebaropen }) {
         <span className="text-gray-700">
           {user.name} ({user.role})
         </span>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-red-600">
-          Logout
-        </button>
+        {token ? (
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-red-600">
+            Logout
+          </button>
+        ) : (
+          <button
+            onClick={handleLogout}
+            className="bg-green-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-green-600">
+            Login
+          </button>
+        )}
       </div>
     </div>
   );

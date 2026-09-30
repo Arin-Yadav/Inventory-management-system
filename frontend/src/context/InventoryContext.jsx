@@ -6,13 +6,13 @@ const backendURL = import.meta.env.VITE_API_URL;
 
 const InventoryContextProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [user, setUser] = useState({});
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [stockmovements, setStockmovements] = useState([]);
 
   //   const token = localStorage.getItem("token");
-  
 
   useEffect(() => {
     if (!token) return;
@@ -85,6 +85,29 @@ const InventoryContextProvider = ({ children }) => {
     fetchStockmovements();
   }, [token]);
 
+  useEffect(() => {
+    if (!token) return; // bail out early if no token
+
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(backendURL + "/user/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.data.success) {
+          setUser(response.data.user);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        setUser(null);
+      }
+    };
+
+    fetchUser();
+  }, [token]);
+
   const value = {
     backendURL,
     products,
@@ -97,6 +120,8 @@ const InventoryContextProvider = ({ children }) => {
     setStockmovements,
     token,
     setToken,
+    user,
+    setUser,
   };
 
   return (

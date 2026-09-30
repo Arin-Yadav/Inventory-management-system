@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-// import api from "../api/api";
-import { useNavigate } from "react-router-dom";
-import { RouteIndex } from "../helpers/RouteName";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { RouteIndex, RouteRegister } from "../helpers/RouteName";
 import { InventoryContext } from "../context/Context";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,18 +11,22 @@ export default function Login() {
   // const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const {backendURL, setToken} = useContext(InventoryContext)
+  const { backendURL, setToken, setUser } = useContext(InventoryContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // const res = await api.post("/user/login", { email, password });
-      const res = await axios.post(backendURL + "/user/login", {email, password})
+      const res = await axios.post(backendURL + "/user/login", {
+        email,
+        password,
+      });
       localStorage.setItem("token", res.data?.token);
-      setToken(res.data?.token)
+      setToken(res.data?.token);
+      setUser(res.data?.user);
       navigate(RouteIndex);
+      toast.success("Logged in successfully");
     } catch (err) {
-      console.log("Error: ", err)
+      console.log("Error: ", err);
     }
   };
 
@@ -56,6 +60,13 @@ export default function Login() {
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
           Login
         </button>
+
+        <p className="text-sm w-full text-center mt-5">
+          Didn't have an account?{" "}
+          <Link to={RouteRegister} className="text-blue-500 hover:underline">
+            Register now
+          </Link>
+        </p>
       </form>
     </div>
   );
