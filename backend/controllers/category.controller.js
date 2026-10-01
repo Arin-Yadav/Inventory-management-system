@@ -18,13 +18,11 @@ export const createCategory = async (req, res) => {
     const category = new Category({ name, description });
     await category.save();
 
-    res
-      .status(201)
-      .json({
-        message: "Category created successfully",
-        category,
-        success: true,
-      });
+    res.status(201).json({
+      message: "Category created successfully",
+      category,
+      success: true,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

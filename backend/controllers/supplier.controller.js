@@ -4,10 +4,19 @@ import Supplier from "../models/supplier.model.js";
 export const createSupplier = async (req, res) => {
   try {
     // const supplier = new Supplier(req.body);
-    const { name, email, phone, address, productsSupplied } = req.body.formData;
+    const { name, supplierId, email, phone, address, productsSupplied } = req.body.formData;
+
+    const isExists = await Supplier.findOne({ email });
+    if (isExists) {
+      return res.status(400).json({
+        success: false,
+        message: "Supplier already exists",
+      });
+    }
 
     const supplier = new Supplier({
       name,
+      supplierId,
       email,
       phone,
       address,

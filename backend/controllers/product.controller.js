@@ -13,7 +13,7 @@ export const createProduct = async (req, res) => {
       quantity,
       costPrice,
       sellingPrice,
-      supplier,
+      supplierId,
       reorderLevel,
       unitOfMeasure,
     } = req.body.formData;
@@ -40,12 +40,19 @@ export const createProduct = async (req, res) => {
     }
 
     // Check if supplier exists
-    const supplierDoc = await Supplier.findById(supplier);
+    // const supplierDoc = await Supplier.findById(supplier);
+    // if (!supplierDoc) {
+    //   return res.status(404).json({ message: "Supplier not found" });
+    // }
+
+    const supplierDoc = await Supplier.findOne({ supplierId });
     if (!supplierDoc) {
-      return res.status(404).json({ message: "Supplier not found" });
+      return res.json(404).json({
+        message: "Supplier not found",
+      });
     }
 
-    // Create product
+    // Create products
     const product = new Product({
       sku,
       name,
@@ -54,7 +61,7 @@ export const createProduct = async (req, res) => {
       quantity,
       costPrice,
       sellingPrice,
-      supplier,
+      supplier: supplierDoc.id,
       reorderLevel,
       unitOfMeasure,
     });
@@ -67,7 +74,11 @@ export const createProduct = async (req, res) => {
       });
     }
 
-    res.status(201).json({ message: "Product created successfully", product, success: true });
+    res.status(201).json({
+      message: "Product created successfully",
+      product,
+      success: true,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

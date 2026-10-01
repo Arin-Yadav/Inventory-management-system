@@ -20,6 +20,10 @@ const supplierSchema = new mongoose.Schema(
     productsSupplied: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
     ],
+    supplierId: {
+      type: String,
+      required: true
+    }
   },
   { timestamps: true },
 );

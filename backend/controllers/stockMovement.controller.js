@@ -3,12 +3,12 @@ import Product from "../models/product.model.js";
 
 // Create new stock movements
 export const createStockMovement = async (req, res) => {
-  const { product, type, quantity, reason } = req.body.formData;
+  const { productsku, type, quantity, reason } = req.body.formData;
   const userId = req.user.id;
-  const newQuantity = Number(quantity)
+  const newQuantity = Number(quantity);
 
   // Validate Product
-  const productDoc = await Product.findById(product);
+  const productDoc = await Product.findOne({ sku: productsku });
   if (!productDoc) {
     return res.status(404).json({ message: "Product not found" });
   }
@@ -29,7 +29,7 @@ export const createStockMovement = async (req, res) => {
 
   // Log Stock Movement
   const movements = await StockMovement.create({
-    product,
+    product: productDoc.id,
     type,
     quantity,
     reason,
@@ -40,7 +40,7 @@ export const createStockMovement = async (req, res) => {
     message: "Stock movement recorder",
     movements,
     product: productDoc,
-    success: true
+    success: true,
   });
 };
 
@@ -51,11 +51,11 @@ export const getStockMovements = async (req, res) => {
       // .populate("product performedBy") // replaces the ObjectIds with full product and user documents.
       .populate({
         path: "product",
-        select: "name sku supplier"
+        select: "name sku supplier",
       })
       .populate({
         path: "performedBy",
-        select: "name role"
+        select: "name role",
       })
       .sort({ createdAt: -1 })
       .lean();
