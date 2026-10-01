@@ -7,7 +7,7 @@ const StockmovementForm = () => {
   const { backendURL, token, setStockmovements } = useContext(InventoryContext);
 
   const initialFormData = {
-    product: "",
+    productsku: "",
     type: "IN",
     quantity: 0,
     reason: "",
@@ -20,7 +20,6 @@ const StockmovementForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData)
     try {
       const response = await axios.post(
         backendURL + "/stockmovements",
@@ -48,13 +47,26 @@ const StockmovementForm = () => {
         Add new Stockmovement
       </h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700">
             Product id
           </label>
           <input
             type="text"
             name="product"
+            value={formData.product}
+            onChange={handleChange}
+            className="mt-1 block w-full border rounded-md p-2"
+          />
+        </div> */}
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Product SKU (Stock keeping unit)
+          </label>
+          <input
+            type="text"
+            name="productsku"
             value={formData.product}
             onChange={handleChange}
             className="mt-1 block w-full border rounded-md p-2"

@@ -4,7 +4,8 @@ import { InventoryContext } from "../context/Context";
 import { toast } from "react-toastify";
 
 const ProductForm = () => {
-  const { backendURL, token, setProducts } = useContext(InventoryContext);
+  const { backendURL, token, setProducts, categories } =
+    useContext(InventoryContext);
 
   const initialFormData = {
     sku: "",
@@ -14,14 +15,22 @@ const ProductForm = () => {
     quantity: "",
     costPrice: "",
     sellingPrice: "",
-    supplier: "",
+    supplierId: "",
     reorderLevel: "",
     unitOfMeasure: "",
   };
   const [formData, setFormData] = useState(initialFormData);
 
+  // const handleChange = (e) => {
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  // };
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -41,7 +50,7 @@ const ProductForm = () => {
         const newProduct = response.data.product;
         setProducts((prev) => [...prev, newProduct]);
         setFormData(initialFormData);
-        toast.success("Products added successfully")
+        toast.success("Products added successfully");
       }
     } catch (error) {
       console.log("Error: ", error);
@@ -56,7 +65,9 @@ const ProductForm = () => {
         onSubmit={handleSubmit}
         className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700">SKU</label>
+          <label className="block text-sm font-medium text-gray-700">
+            SKU (Stock keeping unit)
+          </label>
           <input
             type="text"
             name="sku"
@@ -95,13 +106,20 @@ const ProductForm = () => {
           <label className="block text-sm font-medium text-gray-700">
             Category
           </label>
-          <input
-            type="text"
+          {/* <p>Currently selected: {formData.category || "None"}</p> */}
+
+          <select
             name="category"
             value={formData.category}
             onChange={handleChange}
-            className="mt-1 block w-full border rounded-md p-2"
-          />
+            className="mt-1 block w-full border rounded-md p-2 cursor-pointer">
+            <option value="">Select a category</option>
+            {categories.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
@@ -145,12 +163,12 @@ const ProductForm = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Supplier
+            Supplier Id
           </label>
           <input
             type="text"
-            name="supplier"
-            value={formData.supplier}
+            name="supplierId"
+            value={formData.supplierId}
             onChange={handleChange}
             className="mt-1 block w-full border rounded-md p-2"
           />

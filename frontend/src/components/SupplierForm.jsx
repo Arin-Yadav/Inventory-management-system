@@ -8,6 +8,7 @@ const SupplierForm = () => {
 
   const initialFormData = {
     name: "",
+    supplierId: "",
     email: "",
     phone: "",
     address: "",
@@ -20,6 +21,7 @@ const SupplierForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData);
     try {
       const response = await axios.post(
         backendURL + "/suppliers",
@@ -55,6 +57,19 @@ const SupplierForm = () => {
             type="text"
             name="name"
             value={formData.name}
+            onChange={handleChange}
+            className="mt-1 block w-full border rounded-md p-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Supplier Id (username)
+          </label>
+          <input
+            type="text"
+            name="supplierId"
+            value={formData.supplierId}
             onChange={handleChange}
             className="mt-1 block w-full border rounded-md p-2"
           />

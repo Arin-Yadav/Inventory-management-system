@@ -30,6 +30,7 @@ export default function Products() {
                 <th className="px-4 py-2">Cost</th>
                 <th className="px-4 py-2">Price</th>
                 <th className="px-4 py-2">Supplier</th>
+                <th className="px-4 py-2">SupplierId</th>
               </tr>
             </thead>
             <tbody>
@@ -41,6 +42,7 @@ export default function Products() {
                   <td className="px-4 py-2">₹{p.costPrice}</td>
                   <td className="px-4 py-2">₹{p.sellingPrice}</td>
                   <td className="px-4 py-2">{p.supplier?.name || "-"}</td>
+                  <td className="px-4 py-2">{p.supplier?.supplierId || "-"}</td>
                 </tr>
               ))}
             </tbody>
