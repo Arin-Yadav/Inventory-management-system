@@ -59,8 +59,8 @@ async function handleUserLogin(req, res) {
     const userData = {
       name: user.name,
       email: user.email,
-      role: user.role
-    }
+      role: user.role,
+    };
 
     res.status(200).json({
       token,
@@ -75,24 +75,56 @@ async function handleUserLogin(req, res) {
 
 async function handleUserDetails(req, res) {
   try {
-    const userData = req.user
-    const userId = userData.id
+    const userData = req.user;
+    const userId = userData.id;
 
-    const user = await User.findById(userId).select("-password")
-    if(!user) {
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
       return res.status(401).json({
         success: false,
-        message: "You are unauthorized"
-      })
+        message: "You are unauthorized",
+      });
     }
-    
+
     res.status(200).json({
       success: true,
-      user
-    })
+      user,
+    });
   } catch (error) {
-    console.log("Error: ", error)
+    console.log("Error: ", error);
   }
 }
 
-export { handleCreateUser, handleUserLogin, handleUserDetails };
+async function getAllUsers(req, res) {
+  try {
+    const users = await User.find();
+    res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    console.log("Error: ", error);
+  }
+}
+
+async function handleDeleteUser(req, res) {
+  try {
+    const { userId } = req.params;
+    console.log(userId);
+    await User.findByIdAndDelete(userId);
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.log("Error: ", error);
+  }
+}
+
+export {
+  handleCreateUser,
+  handleUserLogin,
+  handleUserDetails,
+  getAllUsers,
+  handleDeleteUser,
+};
