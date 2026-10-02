@@ -11,6 +11,8 @@ const InventoryContextProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [stockmovements, setStockmovements] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   //   const token = localStorage.getItem("token");
 
@@ -86,7 +88,10 @@ const InventoryContextProvider = ({ children }) => {
   }, [token]);
 
   useEffect(() => {
-    if (!token) return; // bail out early if no token
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
     const fetchUser = async () => {
       try {
@@ -102,10 +107,40 @@ const InventoryContextProvider = ({ children }) => {
       } catch (error) {
         console.error("Error fetching user:", error);
         setUser(null);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUser();
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchAllUsers = async () => {
+      try {
+        const response = await axios.get(backendURL + "/user", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.data.success) {
+          setAllUsers(response.data.users);
+        } else {
+          setAllUsers(null);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllUsers();
   }, [token]);
 
   const value = {
@@ -122,6 +157,10 @@ const InventoryContextProvider = ({ children }) => {
     setToken,
     user,
     setUser,
+    loading,
+    setLoading,
+    allUsers,
+    setAllUsers,
   };
 
   return (

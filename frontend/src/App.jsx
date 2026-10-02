@@ -11,6 +11,7 @@ import {
   RouteStockmovementsForm,
   RouteSuppliers,
   RouteSuppliersForm,
+  RouteUsers,
 } from "./helpers/RouteName";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -25,13 +26,15 @@ import ProductForm from "./components/ProductForm";
 import CategoryForm from "./components/CategoryForm";
 import SupplierForm from "./components/SupplierForm";
 import StockmovementForm from "./components/StockmoventForm";
+import AdminProtectedRoutes from "./components/AdminProtectedRoutes";
+import Users from "./pages/Users";
 
 const App = () => {
   return (
     <div>
       <Routes>
-        <Route element={<ProtectedRoutes />}>
-          <Route path={RouteIndex} element={<Layout />}>
+        <Route path={RouteIndex} element={<Layout />}>
+          <Route element={<ProtectedRoutes />}>
             <Route index element={<Dashboard />} />
             <Route path={RouteSuppliers} element={<Suppliers />} />
             <Route path={RouteSuppliersForm} element={<SupplierForm />} />
@@ -40,7 +43,13 @@ const App = () => {
             <Route path={RouteCategories} element={<Categories />} />
             <Route path={RouteCategoriesForm} element={<CategoryForm />} />
             <Route path={RouteStockmovements} element={<Stockmovements />} />
-            <Route path={RouteStockmovementsForm} element={<StockmovementForm />} />
+            <Route
+              path={RouteStockmovementsForm}
+              element={<StockmovementForm />}
+            />
+            <Route element={<AdminProtectedRoutes />}>
+              <Route path={RouteUsers} element={<Users />} />
+            </Route>
           </Route>
         </Route>
         <Route path={RouteLogin} element={<Login />} />

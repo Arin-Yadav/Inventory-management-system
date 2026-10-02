@@ -5,9 +5,14 @@ import {
   RouteProducts,
   RouteStockmovements,
   RouteSuppliers,
+  RouteUsers,
 } from "../helpers/RouteName";
+import { useContext } from "react";
+import { InventoryContext } from "../context/Context";
 
-export default function Sidebar({ isSidebaropen}) {
+export default function Sidebar({ isSidebaropen }) {
+  const { user } = useContext(InventoryContext);
+
   return (
     <aside
       className={`w-64 h-[calc(100vh-4rem)] fixed md:sticky left-0 top-16 pt-5 bg-white border-t border-gray-200 overflow-y-auto shadow-md transform transition-transform duration-300 ${isSidebaropen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
@@ -36,6 +41,11 @@ export default function Sidebar({ isSidebaropen}) {
           className="block p-2 rounded hover:bg-blue-100">
           Stock Movements
         </Link>
+        {user.role === "Admin" && (
+          <Link to={RouteUsers} className="block p-2 rounded hover:bg-blue-100">
+            Users
+          </Link>
+        )}
       </nav>
     </aside>
   );

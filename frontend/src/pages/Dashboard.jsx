@@ -6,10 +6,11 @@ import {
   RouteProducts,
   RouteStockmovements,
   RouteSuppliers,
+  RouteUsers,
 } from "../helpers/RouteName";
 
 const Dashboard = () => {
-  const { products, suppliers, categories, stockmovements } =
+  const { products, suppliers, categories, stockmovements, user, allUsers } =
     useContext(InventoryContext);
 
   return (
@@ -61,6 +62,18 @@ const Dashboard = () => {
             <p className="text-sm text-gray-500">Recent transactions</p>
           </div>
         </Link>
+
+        {user.role === "Admin" && (
+          <Link to={RouteUsers}>
+            <div className="bg-white shadow rounded-lg p-6 hover:shadow-md transition">
+              <h2 className="text-lg font-semibold text-gray-700">Users</h2>
+              <p className="mt-2 text-3xl font-bold text-red-600">
+                {allUsers.length}
+              </p>
+              <p className="text-sm text-gray-500">All Users</p>
+            </div>
+          </Link>
+        )}
       </div>
     </div>
   );

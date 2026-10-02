@@ -10,3 +10,5 @@ export const RouteCategories = "/categories"
 export const RouteCategoriesForm = "/categories/addcategory"
 export const RouteStockmovements = "/stockmovements"
 export const RouteStockmovementsForm = "/stockmovements/addstockmovements"
+
+export const RouteUsers = "/users"
