@@ -9,11 +9,11 @@ export default function StockMovements() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
         <h2 className="text-2xl font-bold">Stock Movements</h2>
         <Link
           to={RouteStockmovementsForm}
-          className="bg-indigo-500 text-white px-4 py-2 cursor-pointer rounded hover:bg-indigo-600">
+          className="bg-indigo-500 text-white px-4 py-2 mt-2 md:mt-0 cursor-pointer rounded hover:bg-indigo-600">
           Record Movement
         </Link>
       </div>
@@ -26,7 +26,7 @@ export default function StockMovements() {
               <th className="px-4 py-2">Product</th>
               <th className="px-4 py-2">Type</th>
               <th className="px-4 py-2">Quantity</th>
-              <th className="px-4 py-2">Reason</th>
+              <th className="px-4 py-2 w-96">Reason</th>
               <th className="px-4 py-2">Performed By</th>
               <th className="px-4 py-2">Date</th>
             </tr>
@@ -48,8 +48,10 @@ export default function StockMovements() {
                   </span>
                 </td>
                 <td className="px-4 py-2">{m.quantity}</td>
-                <td className="px-4 py-2">{m.reason}</td>
-                <td className="px-4 py-2">{m.performedBy?.name || "—"}</td>
+                <td className="px-4 py-2 truncate">{m.reason}</td>
+                <td className="px-4 py-2">
+                  {m.performedBy?.name || "—"}
+                </td>
                 <td className="px-4 py-2">
                   {new Date(m.createdAt).toLocaleString()}
                 </td>

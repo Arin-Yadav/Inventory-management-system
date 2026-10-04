@@ -14,7 +14,7 @@ export default function Navbar({ isSidebaropen, setIsSidebaropen }) {
   };
 
   return (
-    <div className="flex items-center justify-between fixed top-0 z-50 w-full bg-white shadow px-6 h-16">
+    <div className="flex items-center md:justify-between gap-5 md:gap-0 fixed top-0 z-50 w-full bg-white shadow px-6 h-16">
       <button
         className="md:hidden text-gray-700 focus:outline-none"
         onClick={() => setIsSidebaropen((prev) => !prev)}>
@@ -22,7 +22,7 @@ export default function Navbar({ isSidebaropen, setIsSidebaropen }) {
       </button>
 
       <h1 className="text-lg font-semibold">IMS</h1>
-      <div className="flex items-center space-x-4">
+      <div className="md:flex items-center space-x-4 hidden">
         <span className="text-gray-700">
           {user.name} ({user.role})
         </span>

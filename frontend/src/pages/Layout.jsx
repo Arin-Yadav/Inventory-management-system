@@ -10,7 +10,7 @@ export default function Layout() {
       <Navbar isSidebaropen={isSidebaropen} setIsSidebaropen={setIsSidebaropen} />
 
       <div className="flex mt-16">
-        <Sidebar isSidebaropen={isSidebaropen} />
+        <Sidebar isSidebaropen={isSidebaropen} setIsSidebaropen={setIsSidebaropen} />
 
         {/* Main content */}
         <main className="min-w-0 flex-1 p-6">

@@ -20,13 +20,15 @@ export default function Login() {
         email,
         password,
       });
-      localStorage.setItem("token", res.data?.token);
-      setToken(res.data?.token);
-      setUser(res.data?.user);
-      navigate(RouteIndex);
-      toast.success("Logged in successfully");
+      if (res.data.success) {
+        localStorage.setItem("token", res.data?.token);
+        setToken(res.data?.token);
+        setUser(res.data?.user);
+        navigate(RouteIndex);
+        toast.success("Logged in successfully");
+      }
     } catch (err) {
-      console.log("Error: ", err);
+      toast.error(err.response.data.message || "Something went wrong");
     }
   };
 
@@ -44,6 +46,7 @@ export default function Login() {
           placeholder="Email"
           className="w-full p-2 mb-3 border rounded"
           value={email}
+          required
           onChange={(e) => setEmail(e.target.value)}
         />
 
@@ -52,6 +55,7 @@ export default function Login() {
           placeholder="Password"
           className="w-full p-2 mb-3 border rounded"
           value={password}
+          required
           onChange={(e) => setPassword(e.target.value)}
         />
 
