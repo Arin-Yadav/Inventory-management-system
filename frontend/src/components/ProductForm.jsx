@@ -2,10 +2,13 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { InventoryContext } from "../context/Context";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 const ProductForm = () => {
-  const { backendURL, token, setProducts, categories } =
+  const { backendURL, token, setProducts, categories, user } =
     useContext(InventoryContext);
+
+  const [suppliers, setSuppliers] = useState([]);
 
   const initialFormData = {
     sku: "",
@@ -15,11 +18,23 @@ const ProductForm = () => {
     quantity: "",
     costPrice: "",
     sellingPrice: "",
-    supplierId: "",
     reorderLevel: "",
     unitOfMeasure: "",
+    supplierId: "", // only for admin/employee
   };
   const [formData, setFormData] = useState(initialFormData);
+
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      if (user?.role !== "Seller") {
+        const res = await axios.get(`${backendURL}/suppliers`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setSuppliers(res.data);
+      }
+    };
+    fetchSuppliers();
+  }, [user, token, backendURL]);
 
   // const handleChange = (e) => {
   //   setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -35,6 +50,7 @@ const ProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const response = await axios.post(
         backendURL + "/products",
@@ -49,6 +65,7 @@ const ProductForm = () => {
       if (response.data.success) {
         const newProduct = response.data.product;
         setProducts((prev) => [...prev, newProduct]);
+        // setProducts(response.data.product);
         setFormData(initialFormData);
         toast.success("Products added successfully");
       }
@@ -102,12 +119,31 @@ const ProductForm = () => {
           />
         </div>
 
+        {user?.role !== "Seller" && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Supplier
+            </label>
+            <select
+              className="mt-1 block w-full border rounded-md p-2 cursor-pointer"
+              name="supplierId"
+              value={formData.supplierId}
+              onChange={handleChange}>
+              <option value="">Select Supplier</option>
+              {suppliers.map((s) => (
+                <option key={s._id} value={s._id}>
+                  {s.name} ({s.email})
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Category
           </label>
           {/* <p>Currently selected: {formData.category || "None"}</p> */}
-
           <select
             name="category"
             value={formData.category}
@@ -156,19 +192,6 @@ const ProductForm = () => {
             type="number"
             name="sellingPrice"
             value={formData.sellingPrice}
-            onChange={handleChange}
-            className="mt-1 block w-full border rounded-md p-2"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Supplier Id
-          </label>
-          <input
-            type="text"
-            name="supplierId"
-            value={formData.supplierId}
             onChange={handleChange}
             className="mt-1 block w-full border rounded-md p-2"
           />

@@ -13,26 +13,59 @@ const InventoryContextProvider = ({ children }) => {
   const [stockmovements, setStockmovements] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  // const [seller, setSeller] = useState("");
 
   //   const token = localStorage.getItem("token");
 
+  // useEffect(() => {
+  //   if (!token) return;
+
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const response = await axios.get(`${backendURL}/products`, {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       });
+  //       setProducts(response.data);
+  //     } catch (error) {
+  //       console.log("Error:", error);
+  //     }
+  //   };
+
+  //   fetchProducts();
+  // }, [token]);
+
+  // Products
   useEffect(() => {
-    if (!token) return;
+    if (!token || loading) return; // wait until user is fetched
 
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${backendURL}/products`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setProducts(response.data);
+        let response;
+        if (user?.role === "Seller") {
+          response = await axios.get(`${backendURL}/suppliers/me/products`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          // console.log("Seller Products : ", response.data.products);
+          setProducts(response.data.products);
+        }
+
+        if (user?.role === "Admin" || user?.role === "Employee") {
+          response = await axios.get(`${backendURL}/products`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          // console.log("Products : ", response.data);
+          setProducts(response.data);
+        }
+        // setProducts(response.data);
       } catch (error) {
         console.log("Error:", error);
       }
     };
 
     fetchProducts();
-  }, [token]);
+  }, [token, user, loading]);
 
+  // Categories
   useEffect(() => {
     if (!token) return;
 
@@ -51,6 +84,7 @@ const InventoryContextProvider = ({ children }) => {
     fetchCategories();
   }, [token]);
 
+  // Suppliers
   useEffect(() => {
     if (!token) return;
 
@@ -69,6 +103,7 @@ const InventoryContextProvider = ({ children }) => {
     fetchSuppliers();
   }, [token]);
 
+  // Stock movements
   useEffect(() => {
     if (!token) return;
 
@@ -87,17 +122,19 @@ const InventoryContextProvider = ({ children }) => {
     fetchStockmovements();
   }, [token]);
 
+  // fetch current user details
   useEffect(() => {
     if (!token) {
       setLoading(false);
       return;
     }
-
     const fetchUser = async () => {
       try {
         const response = await axios.get(backendURL + "/user/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
+
+        // console.log(response.data);
 
         if (response.data.success) {
           setUser(response.data.user);
@@ -115,12 +152,12 @@ const InventoryContextProvider = ({ children }) => {
     fetchUser();
   }, [token]);
 
+  // Fetching all user details - ADMIN
   useEffect(() => {
     if (!token) {
       setLoading(false);
       return;
     }
-
     const fetchAllUsers = async () => {
       try {
         const response = await axios.get(backendURL + "/user", {
@@ -161,6 +198,8 @@ const InventoryContextProvider = ({ children }) => {
     setLoading,
     allUsers,
     setAllUsers,
+    // seller,
+    // setSeller,
   };
 
   return (

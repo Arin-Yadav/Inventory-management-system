@@ -65,9 +65,11 @@ export default function Login() {
           Login
         </button>
 
-        <p className="text-sm w-full text-center mt-5">
-          Didn't have an account?{" "}
-          <Link to={RouteRegister} className="text-blue-500 hover:underline">
+        <p className="text-sm w-full text-center mt-2">
+          Didn't have an account?
+          <Link
+            to={RouteRegister}
+            className="text-blue-500 hover:underline pl-1">
             Register now
           </Link>
         </p>

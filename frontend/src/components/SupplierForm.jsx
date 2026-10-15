@@ -8,8 +8,8 @@ const SupplierForm = () => {
 
   const initialFormData = {
     name: "",
-    supplierId: "",
     email: "",
+    password: "",
     phone: "",
     address: "",
   };
@@ -21,7 +21,6 @@ const SupplierForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     try {
       const response = await axios.post(
         backendURL + "/suppliers",
@@ -40,7 +39,18 @@ const SupplierForm = () => {
         toast.success("Supplier added successfully");
       }
     } catch (error) {
-      console.log("Error: ", error);
+      if (error.response) {
+        // Server responded with a status code outside 2xx
+        if (error.response.status === 409) {
+          // "Supplier already exists"
+          toast.error(error.response.data.message);
+        } else {
+          console.error("Error:", error.response.data.message);
+        }
+      } else {
+        // Network or other error
+        console.error("Unexpected error:", error.message);
+      }
     }
   };
   return (
@@ -64,12 +74,12 @@ const SupplierForm = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Supplier Id (username)
+            Email
           </label>
           <input
             type="text"
-            name="supplierId"
-            value={formData.supplierId}
+            name="email"
+            value={formData.email}
             onChange={handleChange}
             className="mt-1 block w-full border rounded-md p-2"
           />
@@ -77,12 +87,12 @@ const SupplierForm = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Email
+            Password
           </label>
           <input
-            type="text"
-            name="email"
-            value={formData.email}
+            type="password"
+            name="password"
+            value={formData.password}
             onChange={handleChange}
             className="mt-1 block w-full border rounded-md p-2"
           />

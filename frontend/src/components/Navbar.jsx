@@ -24,7 +24,7 @@ export default function Navbar({ isSidebaropen, setIsSidebaropen }) {
       <h1 className="text-lg font-semibold">IMS</h1>
       <div className="md:flex items-center space-x-4 hidden">
         <span className="text-gray-700">
-          {user.name} ({user.role})
+          {user?.name} ({user?.role})
         </span>
         {token ? (
           <button

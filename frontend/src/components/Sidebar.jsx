@@ -24,7 +24,7 @@ export default function Sidebar({ isSidebaropen, setIsSidebaropen }) {
     <aside
       className={`w-64 h-[calc(100vh-4rem)] fixed md:sticky left-0 top-16 pt-5 bg-white border-t border-gray-200 overflow-y-auto shadow-md transform transition-transform duration-300 ${isSidebaropen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
       <div className="text-gray-700 px-6 py-2 border-b border-gray-200 md:hidden">
-        {user.name} ({user.role})
+        {user?.name} ({user?.role})
       </div>
       <div className="space-y-2 px-4 mt-5">
         <Link
@@ -39,25 +39,29 @@ export default function Sidebar({ isSidebaropen, setIsSidebaropen }) {
           className="block p-2 rounded hover:bg-blue-100">
           Products
         </Link>
-        <Link
-          onClick={() => setIsSidebaropen(false)}
-          to={RouteSuppliers}
-          className="block p-2 rounded hover:bg-blue-100">
-          Suppliers
-        </Link>
-        <Link
-          onClick={() => setIsSidebaropen(false)}
-          to={RouteCategories}
-          className="block p-2 rounded hover:bg-blue-100">
-          Categories
-        </Link>
-        <Link
-          onClick={() => setIsSidebaropen(false)}
-          to={RouteStockmovements}
-          className="block p-2 rounded hover:bg-blue-100">
-          Stock Movements
-        </Link>
-        {user.role === "Admin" && (
+        {user?.role === "Employee" || user?.role === "Admin" && (
+          <>
+            <Link
+              onClick={() => setIsSidebaropen(false)}
+              to={RouteSuppliers}
+              className="block p-2 rounded hover:bg-blue-100">
+              Suppliers
+            </Link>
+            <Link
+              onClick={() => setIsSidebaropen(false)}
+              to={RouteCategories}
+              className="block p-2 rounded hover:bg-blue-100">
+              Categories
+            </Link>
+            <Link
+              onClick={() => setIsSidebaropen(false)}
+              to={RouteStockmovements}
+              className="block p-2 rounded hover:bg-blue-100">
+              Stock Movements
+            </Link>
+          </>
+        )}
+        {user?.role === "Admin" && (
           <Link
             onClick={() => setIsSidebaropen(false)}
             to={RouteUsers}
