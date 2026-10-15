@@ -18,12 +18,20 @@ const supplierSchema = new mongoose.Schema(
       type: String,
     },
     productsSupplied: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
     ],
     supplierId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    role: {
       type: String,
-      required: true
-    }
+      default: "Seller",
+    },
   },
   { timestamps: true },
 );

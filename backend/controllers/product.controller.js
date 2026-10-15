@@ -13,46 +13,74 @@ export const createProduct = async (req, res) => {
       quantity,
       costPrice,
       sellingPrice,
-      supplierId,
       reorderLevel,
       unitOfMeasure,
+      supplierId, // only used by Admin/Employee
     } = req.body.formData;
+
+    const userId = req.user.id;
+    const userRole = req.user.role;
 
     // Basic validations
     if (!sku || !name || !category || !costPrice || !sellingPrice) {
-      return res.status(400).json({ message: "Required fields are missing" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Required fields are missing" });
     }
-
     if (quantity < 0) {
-      return res.status(400).json({ message: "Quantity cannot be negative" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Quantity cannot be negative" });
     }
-
     if (costPrice > sellingPrice) {
       return res
         .status(400)
-        .json({ message: "Selling price must be greater than cost price" });
+        .json({
+          success: false,
+          message: "Selling price must be greater than cost price",
+        });
     }
 
     // Check SKU uniqueness
     const existingProduct = await Product.findOne({ sku });
     if (existingProduct) {
-      return res.status(400).json({ message: "SKU already exists" });
+      return res
+        .status(400)
+        .json({ success: false, message: "SKU already exists" });
     }
 
-    // Check if supplier exists
-    // const supplierDoc = await Supplier.findById(supplier);
-    // if (!supplierDoc) {
-    //   return res.status(404).json({ message: "Supplier not found" });
-    // }
+    let supplier;
 
-    const supplierDoc = await Supplier.findOne({ supplierId });
-    if (!supplierDoc) {
-      return res.json(404).json({
-        message: "Supplier not found",
-      });
+    if (userRole === "Seller") {
+      // Seller can only use their own supplier record
+      supplier = await Supplier.findOne({ supplierId: userId });
+      if (!supplier) {
+        return res
+          .status(403)
+          .json({
+            success: false,
+            message: "Supplier not found or not authorized",
+          });
+      }
+    } else {
+      // Admin/Employee must provide supplierId explicitly
+      if (!supplierId) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: "SupplierId is required for Admin/Employee",
+          });
+      }
+      supplier = await Supplier.findById(supplierId);
+      if (!supplier) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Supplier not found" });
+      }
     }
 
-    // Create products
+    // Create product
     const product = new Product({
       sku,
       name,
@@ -61,26 +89,24 @@ export const createProduct = async (req, res) => {
       quantity,
       costPrice,
       sellingPrice,
-      supplier: supplierDoc.id,
+      supplier: supplier._id,
       reorderLevel,
       unitOfMeasure,
     });
 
     await product.save();
-    // Updates Supplier's productSupplied list
-    if (product.supplier) {
-      await Supplier.findByIdAndUpdate(product.supplier, {
-        $push: { productsSupplied: product._id },
-      });
-    }
+
+    // Update supplier's productsSupplied
+    supplier.productsSupplied.push(product._id);
+    await supplier.save();
 
     res.status(201).json({
+      success: true,
       message: "Product created successfully",
       product,
-      success: true,
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 

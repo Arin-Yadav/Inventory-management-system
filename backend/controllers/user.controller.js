@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Supplier from "../models/supplier.model.js";
 
 async function handleCreateUser(req, res) {
   try {
@@ -36,8 +37,6 @@ async function handleCreateUser(req, res) {
 async function handleUserLogin(req, res) {
   try {
     const { email, password } = req.body;
-    // console.log(email)
-    // console.log(password)
 
     const user = await User.findOne({ email });
 
@@ -53,7 +52,7 @@ async function handleUserLogin(req, res) {
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" },
+      { expiresIn: "1hr" },
     );
 
     const userData = {
@@ -62,10 +61,20 @@ async function handleUserLogin(req, res) {
       role: user.role,
     };
 
+    // Cookie
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    //   maxAge: 60 * 60 * 1000,
+    //   path: "/",
+    // });
+
     res.status(200).json({
       token,
       user: userData,
       success: true,
+      message: "Login successfull",
     });
   } catch (error) {
     console.log(error);
@@ -75,8 +84,7 @@ async function handleUserLogin(req, res) {
 
 async function handleUserDetails(req, res) {
   try {
-    const userData = req.user;
-    const userId = userData.id;
+    const userId = req.user.id;
 
     const user = await User.findById(userId).select("-password");
     if (!user) {

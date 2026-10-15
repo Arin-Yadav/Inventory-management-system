@@ -14,6 +14,6 @@ router.post("/register", handleCreateUser);
 router.post("/login", handleUserLogin);
 router.get("/me", authMiddleware, handleUserDetails);
 router.get("/", authMiddleware, getAllUsers);
-router.delete("/:userId", authMiddleware, handleDeleteUser)
+router.delete("/:userId", authMiddleware, handleDeleteUser);
 
 export default router;
