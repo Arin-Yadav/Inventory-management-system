@@ -2,33 +2,29 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { InventoryContext } from "../context/Context";
 import { RouteProductsForm } from "../helpers/RouteName";
+import { Trash } from "lucide-react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function Products() {
-  const { products, user } = useContext(InventoryContext);
+  const { products, setProducts, user, backendURL, token } =
+    useContext(InventoryContext);
 
-  // console.log(products)
-
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     try {
-  //       let response;
-  //       if (user?.role === "Seller") {
-  //         response = await axios.get(`${backendURL}/suppliers/me/products`, {
-  //           headers: { Authorization: `Bearer ${token}` },
-  //         });
-  //       } else {
-  //         response = await axios.get(`${backendURL}/products`, {
-  //           headers: { Authorization: `Bearer ${token}` },
-  //         });
-  //       }
-  //       setProducts(response.data);
-  //     } catch (error) {
-  //       console.log("Error:", error);
-  //     }
-  //   };
-
-  //   fetchProducts();
-  // }, [token, backendURL]);
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(`${backendURL}/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setProducts((prev) => prev.filter((p) => p._id !== id));
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
 
   return (
     <div className="w-full space-y-6">
@@ -54,6 +50,7 @@ export default function Products() {
                   <th className="px-4 py-2">Quantity</th>
                   <th className="px-4 py-2">Cost</th>
                   <th className="px-4 py-2">Price</th>
+                  <th className="px-4 py-2 text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -64,6 +61,13 @@ export default function Products() {
                     <td className="px-4 py-2">{p.quantity}</td>
                     <td className="px-4 py-2">₹{p.costPrice}</td>
                     <td className="px-4 py-2">₹{p.sellingPrice}</td>
+                    <td className="py-2 text-center">
+                      <button
+                        className="cursor-pointer hover:text-red-700"
+                        onClick={() => handleDelete(p._id)}>
+                        <Trash strokeWidth={1} size={16} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -90,6 +94,7 @@ export default function Products() {
                   <th className="px-4 py-2">Price</th>
                   <th className="px-4 py-2">Supplier</th>
                   <th className="px-4 py-2">SupplierId</th>
+                  <th className="px-4 py-2 text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -103,6 +108,13 @@ export default function Products() {
                     <td className="px-4 py-2">{p.supplier?.name || "-"}</td>
                     <td className="px-4 py-2">
                       {p.supplier?.supplierId || "-"}
+                    </td>
+                    <td className="py-2 text-center">
+                      <button
+                        className="cursor-pointer hover:text-red-700"
+                        onClick={() => handleDelete(p._id)}>
+                        <Trash strokeWidth={1} size={16} />
+                      </button>
                     </td>
                   </tr>
                 ))}

@@ -2,9 +2,29 @@ import { useContext } from "react";
 import { InventoryContext } from "../context/Context";
 import { Link } from "react-router-dom";
 import { RouteStockmovementsForm } from "../helpers/RouteName";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Trash } from "lucide-react";
 
 export default function StockMovements() {
-  const { stockmovements } = useContext(InventoryContext);
+  const { stockmovements, backendURL, token, setStockmovements } =
+    useContext(InventoryContext);
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(`${backendURL}/stockmovements/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setStockmovements((prev) => prev.filter((s) => s._id !== id));
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -29,6 +49,7 @@ export default function StockMovements() {
               <th className="px-4 py-2 w-96">Reason</th>
               <th className="px-4 py-2">Performed By</th>
               <th className="px-4 py-2">Date</th>
+              <th className="px-4 py-2 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -49,11 +70,16 @@ export default function StockMovements() {
                 </td>
                 <td className="px-4 py-2">{m.quantity}</td>
                 <td className="px-4 py-2 truncate">{m.reason}</td>
-                <td className="px-4 py-2">
-                  {m.performedBy?.name || "—"}
-                </td>
+                <td className="px-4 py-2">{m.performedBy?.name || "—"}</td>
                 <td className="px-4 py-2">
                   {new Date(m.createdAt).toLocaleString()}
+                </td>
+                <td className="py-2 text-center">
+                  <button
+                    className="cursor-pointer hover:text-red-700"
+                    onClick={() => handleDelete(m._id)}>
+                    <Trash strokeWidth={1} size={16} />
+                  </button>
                 </td>
               </tr>
             ))}

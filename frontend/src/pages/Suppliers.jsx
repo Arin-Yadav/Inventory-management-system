@@ -2,9 +2,29 @@ import { useContext } from "react";
 import { InventoryContext } from "../context/Context";
 import { Link } from "react-router-dom";
 import { RouteSuppliersForm } from "../helpers/RouteName";
+import { Trash } from "lucide-react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function Suppliers() {
-  const { suppliers } = useContext(InventoryContext);
+  const { suppliers, backendURL, token, setSuppliers } =
+    useContext(InventoryContext);
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(`${backendURL}/suppliers/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setSuppliers((prev) => prev.filter((s) => s._id !== id));
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -27,6 +47,7 @@ export default function Suppliers() {
               <th className="px-4 py-2">Email</th>
               <th className="px-4 py-2">Phone</th>
               <th className="px-4 py-2">Address</th>
+              <th className="px-4 py-2 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -36,6 +57,13 @@ export default function Suppliers() {
                 <td className="px-4 py-2">{s.email}</td>
                 <td className="px-4 py-2">{s.phone}</td>
                 <td className="px-4 py-2">{s.address || "—"}</td>
+                <td className="py-2 text-center">
+                  <button
+                    className="cursor-pointer hover:text-red-700"
+                    onClick={() => handleDelete(s._id)}>
+                    <Trash strokeWidth={1} size={16} />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
