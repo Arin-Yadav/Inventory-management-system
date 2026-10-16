@@ -124,3 +124,27 @@ export const getProductMovements = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const deleteStockMovementById = async (req, res) => {
+  try {
+    const stockMovementId = req.params.id;
+
+    const deletedStockMovement =
+      await StockMovement.findByIdAndDelete(stockMovementId);
+
+    if (!deletedStockMovement) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Stock movement not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Stock movement deleted successfully",
+      // deletedStockMovement,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

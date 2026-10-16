@@ -33,12 +33,10 @@ export const createProduct = async (req, res) => {
         .json({ success: false, message: "Quantity cannot be negative" });
     }
     if (costPrice > sellingPrice) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Selling price must be greater than cost price",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Selling price must be greater than cost price",
+      });
     }
 
     // Check SKU uniqueness
@@ -55,22 +53,18 @@ export const createProduct = async (req, res) => {
       // Seller can only use their own supplier record
       supplier = await Supplier.findOne({ supplierId: userId });
       if (!supplier) {
-        return res
-          .status(403)
-          .json({
-            success: false,
-            message: "Supplier not found or not authorized",
-          });
+        return res.status(403).json({
+          success: false,
+          message: "Supplier not found or not authorized",
+        });
       }
     } else {
       // Admin/Employee must provide supplierId explicitly
       if (!supplierId) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "SupplierId is required for Admin/Employee",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "SupplierId is required for Admin/Employee",
+        });
       }
       supplier = await Supplier.findById(supplierId);
       if (!supplier) {
@@ -151,5 +145,28 @@ export const updateStock = async (req, res) => {
     res.json({ message: "Stock updated", product });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+export const deleteProductById = async (req, res) => {
+  try {
+    const productId = req.params.id;
+
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+
+    if (!deletedProduct) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+      // deletedProduct,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };

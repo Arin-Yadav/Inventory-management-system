@@ -4,7 +4,6 @@ import Category from "../models/category.model.js";
 export const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body.formData;
-    console.log(name);
 
     if (!name) {
       return res.status(400).json({ message: "Category name is required" });
@@ -59,17 +58,25 @@ export const updateCategory = async (req, res) => {
 };
 
 // Delete category
-export const deleteCategory = async (req, res) => {
+export const deleteCategoryById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const categoryId = req.params.id;
 
-    const category = await Category.findById(id);
-    if (!category)
-      return res.status(404).json({ message: "Category not found" });
+    const deletedCategory = await Category.findByIdAndDelete(categoryId);
 
-    await category.deleteOne();
-    res.json({ message: "Category deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    if (!deletedCategory) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Category deleted successfully",
+      // deletedCategory,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };

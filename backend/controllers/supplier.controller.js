@@ -94,3 +94,30 @@ export const getSupplierProducts = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const deleteSupplierById = async (req, res) => {
+  try {
+    const supplierId = req.params.id;
+
+    const deletedSupplier = await Supplier.findByIdAndDelete(supplierId);
+
+    if (!deletedSupplier) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Supplier not found" });
+    }
+
+    // Delete linked user if exists
+    if (deletedSupplier.supplierId) {
+      await User.findByIdAndDelete(deletedSupplier.supplierId);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Supplier and linked user deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
