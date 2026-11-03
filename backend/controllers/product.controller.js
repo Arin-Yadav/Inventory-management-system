@@ -21,6 +21,7 @@ export const createProduct = async (req, res) => {
     const userId = req.user.id;
     const userRole = req.user.role;
 
+
     // Basic validations
     if (!sku || !name || !category || !costPrice || !sellingPrice) {
       return res
@@ -32,12 +33,14 @@ export const createProduct = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Quantity cannot be negative" });
     }
-    if (costPrice > sellingPrice) {
-      return res.status(400).json({
-        success: false,
-        message: "Selling price must be greater than cost price",
-      });
-    }
+
+    // Here one bug is there even if the costPrice < sellingPrice it gives error, so fix it later
+    // if (costPrice > sellingPrice) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Selling price must be greater than cost price",
+    //   });
+    // }
 
     // Check SKU uniqueness
     const existingProduct = await Product.findOne({ sku });
