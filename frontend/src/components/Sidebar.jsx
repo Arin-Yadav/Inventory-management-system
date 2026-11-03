@@ -39,28 +39,29 @@ export default function Sidebar({ isSidebaropen, setIsSidebaropen }) {
           className="block p-2 rounded hover:bg-blue-100">
           Products
         </Link>
-        {user?.role === "Employee" || user?.role === "Admin" && (
-          <>
-            <Link
-              onClick={() => setIsSidebaropen(false)}
-              to={RouteSuppliers}
-              className="block p-2 rounded hover:bg-blue-100">
-              Suppliers
-            </Link>
-            <Link
-              onClick={() => setIsSidebaropen(false)}
-              to={RouteCategories}
-              className="block p-2 rounded hover:bg-blue-100">
-              Categories
-            </Link>
-            <Link
-              onClick={() => setIsSidebaropen(false)}
-              to={RouteStockmovements}
-              className="block p-2 rounded hover:bg-blue-100">
-              Stock Movements
-            </Link>
-          </>
-        )}
+        {user?.role === "Employee" ||
+          (user?.role === "Admin" && (
+            <>
+              <Link
+                onClick={() => setIsSidebaropen(false)}
+                to={RouteSuppliers}
+                className="block p-2 rounded hover:bg-blue-100">
+                Suppliers
+              </Link>
+              <Link
+                onClick={() => setIsSidebaropen(false)}
+                to={RouteCategories}
+                className="block p-2 rounded hover:bg-blue-100">
+                Categories
+              </Link>
+              <Link
+                onClick={() => setIsSidebaropen(false)}
+                to={RouteStockmovements}
+                className="block p-2 rounded hover:bg-blue-100">
+                Stock Movements
+              </Link>
+            </>
+          ))}
         {user?.role === "Admin" && (
           <Link
             onClick={() => setIsSidebaropen(false)}

@@ -67,7 +67,7 @@ const StockmovementForm = () => {
           <input
             type="text"
             name="productsku"
-            value={formData.product}
+            value={formData.productsku}
             onChange={handleChange}
             className="mt-1 block w-full border rounded-md p-2"
           />

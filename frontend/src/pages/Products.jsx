@@ -106,7 +106,7 @@ export default function Products() {
                     <td className="px-4 py-2">₹{p.costPrice}</td>
                     <td className="px-4 py-2">₹{p.sellingPrice}</td>
                     <td className="px-4 py-2">{p.supplier?.name || "-"}</td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-2 text-center">
                       {p.supplier?.supplierId || "-"}
                     </td>
                     <td className="py-2 text-center">

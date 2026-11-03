@@ -70,7 +70,7 @@ export default function StockMovements() {
                 </td>
                 <td className="px-4 py-2">{m.quantity}</td>
                 <td className="px-4 py-2 truncate">{m.reason}</td>
-                <td className="px-4 py-2">{m.performedBy?.name || "—"}</td>
+                <td className="px-4 py-2 text-center">{m.performedBy?.name || "-"}</td>
                 <td className="px-4 py-2">
                   {new Date(m.createdAt).toLocaleString()}
                 </td>

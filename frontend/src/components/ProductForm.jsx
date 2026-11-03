@@ -165,6 +165,7 @@ const ProductForm = () => {
           <input
             type="number"
             name="quantity"
+            min={1}
             value={formData.quantity}
             onChange={handleChange}
             className="mt-1 block w-full border rounded-md p-2"
@@ -178,6 +179,7 @@ const ProductForm = () => {
           <input
             type="number"
             name="costPrice"
+            min={1}
             value={formData.costPrice}
             onChange={handleChange}
             className="mt-1 block w-full border rounded-md p-2"
@@ -191,6 +193,7 @@ const ProductForm = () => {
           <input
             type="number"
             name="sellingPrice"
+            min={1}
             value={formData.sellingPrice}
             onChange={handleChange}
             className="mt-1 block w-full border rounded-md p-2"
@@ -204,6 +207,7 @@ const ProductForm = () => {
           <input
             type="number"
             name="reorderLevel"
+            min={1}
             value={formData.reorderLevel}
             onChange={handleChange}
             className="mt-1 block w-full border rounded-md p-2"
